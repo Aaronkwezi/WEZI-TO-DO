@@ -26,7 +26,7 @@ export default{
             {
                 test:/\.(png|jpg|jpeg|svg|gif)$/i,
                 type: "asset/resource",
-            }
+            },
         ],
     },
 };
