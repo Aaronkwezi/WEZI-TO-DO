@@ -14,6 +14,15 @@ export default function task(){
         this.completed = !this.completed;
         return this.completed;
     }
+    createtask.prototype.taskPriority = function (){
+        if(this.priority === "High" || 
+            this.priority === "Moderate" ||
+             this.priority === "Low"){
+            
+            return this.priority;
+        }
+        return "Invalid priority";
+    }
 
     function addTask(title,description,dueDate,priority){
     const newTask = new createtask(title,description,dueDate,priority);

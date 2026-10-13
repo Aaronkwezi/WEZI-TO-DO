@@ -4,8 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack",
+    "dev": "webpack serve",
+    "deploy": "git subtree push --prefix dist origin gh-pages"
   },
+
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Aaronkwezi/WEZI-TO-DO.git"
@@ -17,6 +20,7 @@
   "bugs": {
     "url": "https://github.com/Aaronkwezi/WEZI-TO-DO/issues"
   },
+   
   "homepage": "https://github.com/Aaronkwezi/WEZI-TO-DO#readme",
   "devDependencies": {
     "css-loader": "^7.1.5",

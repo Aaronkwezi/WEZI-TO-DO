@@ -18,6 +18,7 @@ export default function project(){
 
     createProject.prototype.isDone = function(){
         return this.tasks.length>0 && this.tasks.every(task => task.completed);
+
     }
 
     function addProject(title,description,dueDate,tasks=[]){
@@ -25,5 +26,10 @@ export default function project(){
     Projects.push(newProject);
     return newProject;
     }
-    return {addProject,Projects};
-}
+
+    function findProjects(id){
+        return Projects.find(project=>project.id === id);
+    }
+
+    return {addProject,Projects,findProjects};
+} 
