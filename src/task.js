@@ -23,6 +23,12 @@ export default function task(){
         }
         return "Invalid priority";
     }
+    createtask.prototype.edit = function(title,description,dueDate,priority){
+        this.title = title;
+        this.description = description;
+        this.dueDate = dueDate;
+        this.priority = priority;
+    }
 
     function addTask(title,description,dueDate,priority){
     const newTask = new createtask(title,description,dueDate,priority);

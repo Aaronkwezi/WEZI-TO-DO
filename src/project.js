@@ -22,6 +22,10 @@ export default function project(){
     createProject.prototype.removeTask = function(taskId){
         this.tasks = this.tasks.filter(task=>task.id !== taskId);
     }
+    createProject.prototype.editProject = function(title,description){
+        this.title = title;
+        this.description = description;
+    }
 
     function addProject(title,description,tasks=[]){
     const newProject = new createProject(title,description,tasks);
@@ -33,7 +37,9 @@ export default function project(){
         return Projects.find(project=>project.id === id);
     }
     function deleteProject(projectId){
-        Projects = Projects.filter(project=>project.id!==projectId);
+        const index = Projects.findIndex(project=>project.id!==projectId);
+        if(index!==-1)
+            Projects.splice(index,1);
     }
     return {addProject,Projects,findProjects,deleteProject};
 } 

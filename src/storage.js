@@ -22,7 +22,6 @@ export function deleteTask(projectId,taskId){
     const project = projects.find(project=>project.id === projectId);
     if(!project) return;
 
-    const task = project.tasks.filter(task=>task.id !== taskId);
-    if(!task) return;
+    project.task = project.tasks.filter(task=>task.id !== taskId);
     localStorage.setItem('projects',JSON.stringify(projects));
 }
