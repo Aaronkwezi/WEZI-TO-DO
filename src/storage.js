@@ -17,3 +17,12 @@ export function updateTasks(projectId,taskId,changes){
 
 
 }
+export function deleteTask(projectId,taskId){
+    const projects = JSON.parse(localStorage.getItem('projects'))|| [];
+    const project = projects.find(project=>project.id === projectId);
+    if(!project) return;
+
+    const task = project.tasks.filter(task=>task.id !== taskId);
+    if(!task) return;
+    localStorage.setItem('projects',JSON.stringify(projects));
+}

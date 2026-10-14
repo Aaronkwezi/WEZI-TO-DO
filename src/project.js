@@ -19,6 +19,9 @@ export default function project(){
         return this.tasks.length>0 && this.tasks.every(task => task.completed);
 
     }
+    createProject.prototype.removeTask = function(taskId){
+        this.tasks = this.tasks.filter(task=>task.id !== taskId);
+    }
 
     function addProject(title,description,tasks=[]){
     const newProject = new createProject(title,description,tasks);
@@ -29,6 +32,8 @@ export default function project(){
     function findProjects(id){
         return Projects.find(project=>project.id === id);
     }
-
-    return {addProject,Projects,findProjects};
+    function deleteProject(projectId){
+        Projects = Projects.filter(project=>project.id!==projectId);
+    }
+    return {addProject,Projects,findProjects,deleteProject};
 } 
