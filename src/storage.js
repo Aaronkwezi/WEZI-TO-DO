@@ -4,11 +4,16 @@ export function saveProject(project){
     localStorage.setItem('projects',JSON.stringify(projects));
 }
 
-export function updateTasks(id){
-    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    tasks = tasks.map(task =>{
-        if(task.id === id){
-            task
-        }
-    })
+export function updateTasks(projectId,taskId,changes){
+    const projects = JSON.parse(localStorage.getItem('projects'))|| [];
+    const project = projects.find(project=>project.id === projectId);
+    if(!project) return;
+
+    const task = project.tasks.find(task=>task.id === taskId);
+    if(!task) return;
+
+    Object.assign(task,changes);
+    localStorage.setItem('projects',JSON.stringify(projects));
+
+
 }

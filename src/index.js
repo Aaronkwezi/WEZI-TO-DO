@@ -1,7 +1,7 @@
 import task from "./task.js";
 import project from "./project.js";
 import {Overdue,UpComingTasks,todaysTasks} from "./date.js";
-import { saveProject } from "./storage.js";
+import { saveProject,updateTasks } from "./storage.js";
 const taskManager = task();
 const projectManager = project();
 const myTask = taskManager.addTask("Bigday","WE gonna party", "10-3-26","Poor");
@@ -16,3 +16,11 @@ console.log(myProject.isDone());
 console.log(myTask);
 console.log(myTask.taskPriority());
 console.log(Overdue(taskManager.tasks));
+updateTasks(myProject.id, myTask.id, {
+    title: "Buy groceries",
+    description: "Milk and bread",
+    dueDate: "2026-10-20",
+    priority: "High",
+    completed: false
+});
+console.log(JSON.parse(localStorage.getItem("projects")));
