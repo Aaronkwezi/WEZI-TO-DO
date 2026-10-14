@@ -1,9 +1,8 @@
 export default function project(){
 
-    function createProject(title,dueDate,description,tasks=[]){
+    function createProject(title,description,tasks=[]){
         this.id = crypto.randomUUID();
         this.title = title;
-        this.dueDate = dueDate;
         this.description = description;
         this.tasks = tasks ?? [];
     };
@@ -21,8 +20,8 @@ export default function project(){
 
     }
 
-    function addProject(title,description,dueDate,tasks=[]){
-    const newProject = new createProject(title,dueDate,description,tasks);
+    function addProject(title,description,tasks=[]){
+    const newProject = new createProject(title,description,tasks);
     Projects.push(newProject);
     return newProject;
     }
