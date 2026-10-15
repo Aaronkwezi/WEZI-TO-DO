@@ -1,22 +1,23 @@
-export function renderApp(taskManager){
+import { saveProjects } from "./storage.js";
+export function renderApp(taskManager,projectManager){
    const app = document.querySelector("#app");
 
-   const sidebar = createSidebar(taskManager);
+   const sidebar = createSidebar(taskManager,projectManager);
    app.replaceChildren(sidebar);
 }
-function createSidebar(taskManager){
+function createSidebar(taskManager,projectManager){
     const sideBar = document.createElement("aside");
     const newtaskbtn = document.createElement("button");
     newtaskbtn.textContent="New task";
     newtaskbtn.type = "button";
     newtaskbtn.addEventListener("click",()=>{
-        createTask(taskManager);
+        createTask(taskManager,projectManager);
     })
     sideBar.append(newtaskbtn)
     return sideBar;
 }
 
-function createTask(taskManager){
+function createTask(taskManager,projectManager){
     // Keep only one task form open at a time.
     if (document.querySelector("#task-form")) return;
 
@@ -65,6 +66,9 @@ function createTask(taskManager){
             taskData.priority
         );
         console.log(newTask);
+        projectManager.addTaskToProject(newTask);
+        console.log(projectManager.Projects);
+        saveProjects(projectManager.Projects);
         form.remove();
         
     });
@@ -77,4 +81,6 @@ function createTask(taskManager){
     form.querySelector("#task-title").focus();
 }
 
-function 
+function createProject(){
+    
+}
