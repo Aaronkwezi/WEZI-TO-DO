@@ -1,3 +1,4 @@
+import project from "./project.js";
 import { saveProjects } from "./storage.js";
 export function renderApp(taskManager,projectManager){
    const app = document.querySelector("#app");
@@ -13,11 +14,18 @@ function createSidebar(taskManager,projectManager){
     newtaskbtn.addEventListener("click",()=>{
         createTask(taskManager,projectManager);
     })
+    const addProjectbtn = document.createElement("button");
+    addProjectbtn.textContent="Add Project";
+    addProjectbtn.type = "button";
+    addProjectbtn.addEventListener("click",()=>{
+        createProject(taskManager,projectManager);
+    })
     sideBar.append(newtaskbtn)
+    sideBar.append(addProjectbtn);
     return sideBar;
 }
 
-function createTask(taskManager,projectManager){
+function createTask(taskManager,projectManager,projectId){
     // Keep only one task form open at a time.
     if (document.querySelector("#task-form")) return;
 
@@ -57,7 +65,7 @@ function createTask(taskManager,projectManager){
             priority: formData.get("priority")
         };
 
-        // Next step: pass taskData to your task manager and save the project.
+        // pass taskData to your task manager and save the project.
         console.log(taskData);
         const newTask = taskManager.addTask(
             taskData.title,
@@ -66,7 +74,7 @@ function createTask(taskManager,projectManager){
             taskData.priority
         );
         console.log(newTask);
-        projectManager.addTaskToProject(newTask);
+        projectManager.addTaskToProject(newTask,projectId);
         console.log(projectManager.Projects);
         saveProjects(projectManager.Projects);
         form.remove();
@@ -81,6 +89,48 @@ function createTask(taskManager,projectManager){
     form.querySelector("#task-title").focus();
 }
 
-function createProject(){
-    
+function createProject(taskManager,projectManager){
+    if (document.querySelector("#task-form")) return;
+
+    const form = document.createElement("form");
+    form.id = "task-form";
+    form.innerHTML = `
+        <h2>New Project</h2>
+
+        <label for="Project-title">Title</label>
+        <input id="Project-title" name="title" type="text" required>
+
+        <label for="Project-description">Description</label>
+        <textarea id="Project-description" name="description" rows="3"></textarea>
+
+        <button type="submit">Save Project</button>
+        <button type="button" id="cancel-Project">Cancel</button>
+    `;
+
+    form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(form);
+        const projectData = {
+            title: formData.get("title").trim(),
+            description: formData.get("description").trim(),
+           
+        };
+        const newProject = projectManager.addProject(
+            projectData.title,
+            projectData.description,
+        )
+        console.log(newProject)
+        console.log(projectManager.Projects);
+        saveProjects(projectManager.Projects);
+        form.remove();
+        createTask(taskManager,projectManager,newProject.id);
+    });
+
+     form.querySelector("#cancel-Project").addEventListener("click", () => {
+        form.remove();
+    });
+
+    document.querySelector("#app").append(form);
+    form.querySelector("#Project-title").focus();
 }

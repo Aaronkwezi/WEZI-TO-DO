@@ -10,22 +10,13 @@ export default function project(savedProjects = [],taskManager){
     
     const Projects = savedProjects.map(savedProject=>{
         const tasks = (savedProject.tasks || []).map(savedTask => {
-            const restoredTask = taskManager.addTask(
-                savedTask.title,
-                savedTask.description,
-                savedTask.dueDate,
-                savedTask.priority
-            );
+            const restoredTask = taskManager.addTask(savedTask.title,savedTask.description,savedTask.dueDate,savedTask.priority);
             restoredTask.id = savedTask.id;
             restoredTask.completed = savedTask.completed;
             return restoredTask;
         });
           // Recreate the project so it has addTask(), isDone(), etc.
-    const restoredProject = new createProject(
-        savedProject.title,
-        savedProject.description,
-        tasks
-    );
+    const restoredProject = new createProject(savedProject.title, savedProject.description,tasks);
 
     restoredProject.id = savedProject.id;
 
