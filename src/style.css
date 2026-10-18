@@ -1,0 +1,19 @@
+body{
+    margin:0;
+}
+
+#app{
+   display: flex; 
+
+}
+.sidebar{
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: blue;
+    padding: 50px;
+}
+.project-list{
+    display: flex;
+    flex-direction: column;
+}

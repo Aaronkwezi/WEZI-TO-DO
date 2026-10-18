@@ -56,6 +56,7 @@ export default function project(savedProjects = [],taskManager){
         return Projects.find(project=>project.id === id);
     }
     function deleteProject(projectId){
+        if(projectId === defaultProject.id) return;
         const index = Projects.findIndex(project=>project.id === projectId);
         if(index!==-1)
             Projects.splice(index,1);
