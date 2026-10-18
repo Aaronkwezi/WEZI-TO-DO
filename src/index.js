@@ -1,6 +1,5 @@
 import task from "./task.js";
 import project from "./project.js";
-import {Overdue,UpComingTasks,todaysTasks} from "./date.js";
 import { renderApp } from "./dom.js";
 import { loadProjects } from "./storage.js";
 import './style.css';

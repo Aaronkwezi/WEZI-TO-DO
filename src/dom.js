@@ -1,4 +1,6 @@
 import { saveProjects } from "./storage.js";
+import {  Overdue,UpComingTasks,todaysTasks } from "./date.js";
+
 export function renderApp(taskManager,projectManager){
    const app = document.querySelector("#app");
    const mainPage = document.createElement("div");
@@ -121,7 +123,7 @@ function createTask(taskManager,projectManager,projectId){
 }
 
 function createProject(taskManager,projectManager){
-    if (document.querySelector("#task-form")) return;
+    if (document.querySelector("#project-form")) return;
 
     const form = document.createElement("form");
     form.id = "project-form";
@@ -182,7 +184,42 @@ function displayProjectsList(projectManager,taskManager){
 
     return projectList;
 }
-function taskCategories(projectManager){
+ function displayCategoryTasks(title,tasks){
+    const content = document.createElement("div");
+    content.id = "main-content";
+    const heading = document.createElement("h2");
+    heading.textContent = title;
+    const taskContainer = document.createElement("div");
+    taskContainer.classList.add("task-container");
+    tasks.forEach(task=>{
+        const taskCard = document.createElement("div");
+        taskCard.classList.add("task-card")
+        const taskTitle = document.createElement("p");
+        taskTitle.textContent = task.title;
+        const taskDescription = document.createElement("p");
+        taskDescription.textContent = task.description;
+        const taskDueDate = document.createElement("p");
+        taskDueDate.textContent = task.dueDate;
+        const taskPriority = document.createElement("p");
+        taskPriority.textContent = task.priority;
+        taskCard.append(taskTitle,taskDescription,taskDueDate,taskPriority);
+        taskContainer.append(taskCard);
+    });
+        if(tasks.length===0){
+            taskContainer.textContent = "No tasks found.";
+        }
+        content.append(heading,taskContainer);
+
+        const currentContent = document.querySelector("#main-content");
+         if (currentContent) {
+            currentContent.replaceWith(content);
+         } else {
+        document.querySelector("#main-page").append(content);
+        }
+    
+
+ }
+function taskCategories(projectManager,taskManager){
     const categories = document.createElement("nav");
     const completedTasks = document.createElement("button");
     completedTasks.textContent="Completed";
@@ -191,16 +228,33 @@ function taskCategories(projectManager){
         const allTasks = projectManager.Projects.flatMap(project => project.tasks);
         const completed = allTasks.filter(task => task.completed);
         console.log(completed);
+        displayCategoryTasks("Completed",completed)
+        
     })
     const overDue = document.createElement("button");
     overDue.textContent="Over Due";
     overDue.type = "button";
+    overDue.addEventListener("click",()=>{
+        const allTasks = projectManager.Projects.flatMap(project => project.tasks);
+        const OverdueTasks = Overdue(allTasks);
+        displayCategoryTasks("OverDue Tasks",OverdueTasks);
+    })
     const todayTasks = document.createElement("button");
     todayTasks.textContent="Today's";
     todayTasks.type = "button";
+    todayTasks.addEventListener("click",()=>{
+        const allTasks = projectManager.Projects.flatMap(project => project.tasks);
+        const todayTask = todaysTasks(allTasks);
+        displayCategoryTasks("Today's Tasks",todayTask);
+    })
     const upcomingTasks = document.createElement("button");
     upcomingTasks.textContent="Upcoming";
     upcomingTasks.type = "button";
+    upcomingTasks.addEventListener("click",()=>{
+        const allTasks = projectManager.Projects.flatMap(project => project.tasks);
+        const upcoming = UpComingTasks(allTasks);
+        displayCategoryTasks("Upcoming Tasks",upcoming);
+    })
     categories.append(todayTasks,upcomingTasks,overDue,completedTasks);
     return categories;
 }
