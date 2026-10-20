@@ -1,5 +1,6 @@
 import { saveProjects } from "./storage.js";
 import {  Overdue,UpComingTasks,todaysTasks } from "./date.js";
+import logo from "./Images/wezilogo2.png";
 
 export function renderApp(taskManager,projectManager){
    const app = document.querySelector("#app");
@@ -22,19 +23,26 @@ export function renderApp(taskManager,projectManager){
 function createSidebar(taskManager,projectManager){
     const sideBar = document.createElement("aside");
     sideBar.classList.add("sidebar");
+    const logoImg = document.createElement("img");
+    logoImg.src = logo;
+    logoImg.alt = " To do list logo";
+    logoImg.classList.add("sidebar-logo");
     const newtaskbtn = document.createElement("button");
+    newtaskbtn.classList.add("sidebarbtn")
     newtaskbtn.textContent="New task";
     newtaskbtn.type = "button";
     newtaskbtn.addEventListener("click",()=>{
         createTask(taskManager,projectManager);
     })
     const addProjectbtn = document.createElement("button");
+    addProjectbtn.classList.add("sidebarbtn")
     addProjectbtn.textContent="Add Project";
     addProjectbtn.type = "button";
     addProjectbtn.addEventListener("click",()=>{
         createProject(taskManager,projectManager);
     })
     const projectsMenu = document.createElement("button");
+    projectsMenu.classList.add("sidebarbtn")
     projectsMenu.textContent = "Projects";
     projectsMenu.type = "button";
     projectsMenu.addEventListener("click",()=>{
@@ -48,6 +56,7 @@ function createSidebar(taskManager,projectManager){
         }
         
     });
+    sideBar.append(logoImg);
     sideBar.append(newtaskbtn)
     sideBar.append(addProjectbtn);
     sideBar.append(projectsMenu);
@@ -56,8 +65,7 @@ function createSidebar(taskManager,projectManager){
 
 function createTask(taskManager,projectManager,projectId){
     // Keep only one task form open at a time.
-    if (document.querySelector("#task-form")) return;
-
+    if (document.querySelector("#task-form, #project-form, #edit-form")) return;
     const form = document.createElement("form");
     form.id = "task-form";
     form.innerHTML = `
@@ -123,8 +131,7 @@ function createTask(taskManager,projectManager,projectId){
 }
 
 function createProject(taskManager,projectManager){
-    if (document.querySelector("#project-form")) return;
-
+    if (document.querySelector("#project-form, #task-form, #edit-form")) return;
     const form = document.createElement("form");
     form.id = "project-form";
     form.innerHTML = `
@@ -193,13 +200,15 @@ function displayProjectsList(projectManager,taskManager){
     taskContainer.classList.add("task-container");
     tasks.forEach(task=>{
         const taskCard = document.createElement("div");
-        taskCard.classList.add("task-card")
+        taskCard.classList.add("category-card")
+        const taskInfo = document.createElement("div");
+        taskInfo.classList.add("taskInfo")
         const taskTitle = document.createElement("p");
         taskTitle.textContent = task.title;
         const taskDescription = document.createElement("p");
-        taskDescription.textContent = task.description;
+        taskDescription.textContent = `Desc: ${task.description}`;
         const taskDueDate = document.createElement("p");
-        taskDueDate.textContent = task.dueDate;
+        taskDueDate.textContent = `Due date: ${task.dueDate}`;
         const taskPriority = document.createElement("p");
         taskPriority.textContent = task.priority;
         taskCard.append(taskTitle,taskDescription,taskDueDate,taskPriority);
@@ -219,7 +228,7 @@ function displayProjectsList(projectManager,taskManager){
     
 
  }
-function taskCategories(projectManager,taskManager){
+function taskCategories(projectManager){
     const categories = document.createElement("nav");
     const completedTasks = document.createElement("button");
     completedTasks.textContent="Completed";
@@ -298,14 +307,19 @@ function mainContent(project,projectManager,taskManager){
     project.tasks.forEach(task=>{
         const taskCard = document.createElement("div");
         taskCard.classList.add("task-card")
-        const taskTitle = document.createElement("p");
+        const taskInfo = document.createElement("div");
+        taskInfo.classList.add("taskInfo")
+        const taskTitle = document.createElement("h3");
         taskTitle.textContent = task.title;
         const taskDescription = document.createElement("p");
-        taskDescription.textContent = task.description;
+        taskDescription.textContent = `Desc: ${task.description}`;
         const taskDueDate = document.createElement("p");
-        taskDueDate.textContent = task.dueDate;
+        taskDueDate.textContent = `Due date: ${task.dueDate}`;
         const taskPriority = document.createElement("p");
         taskPriority.textContent = task.priority;
+        taskInfo.append(taskTitle,taskDescription,taskDueDate,taskPriority);
+        const taskActions = document.createElement("div");
+        taskActions.classList.add("taskActions")
         const deleteTaskbtn = document.createElement("button")
         deleteTaskbtn.textContent="Delete";
         deleteTaskbtn.type = "button";
@@ -350,7 +364,7 @@ function mainContent(project,projectManager,taskManager){
         form.addEventListener("submit", (event) => {
              event.preventDefault();
 
-             const formData = new FormData(form);
+            const formData = new FormData(form);
 
             task.edit(
                 formData.get("title").trim(),
@@ -380,7 +394,8 @@ function mainContent(project,projectManager,taskManager){
         saveProjects(projectManager.Projects);
     })
        checkButtonLabel.append(checkbutton," Task completed");
-        taskCard.append(taskTitle,taskDescription,taskDueDate,taskPriority,deleteTaskbtn,editTaskbtn,checkButtonLabel);
+       taskActions.append(deleteTaskbtn,editTaskbtn,checkButtonLabel)
+        taskCard.append(taskInfo,taskActions);
         taskContainer.append(taskCard);
     });
 
