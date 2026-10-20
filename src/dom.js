@@ -66,6 +66,7 @@ function createSidebar(taskManager,projectManager){
 function createTask(taskManager,projectManager,projectId){
     // Keep only one task form open at a time.
     if (document.querySelector("#task-form, #project-form, #edit-form")) return;
+    const dialog = document.createElement("dialog");
     const form = document.createElement("form");
     form.id = "task-form";
     form.innerHTML = `
@@ -115,6 +116,7 @@ function createTask(taskManager,projectManager,projectId){
         console.log(projectManager.Projects);
         saveProjects(projectManager.Projects);
         form.remove();
+        dialog.remove();
         if(projectId){
             const selectedProject = projectManager.findProjects(projectId);
             mainContent(selectedProject,projectManager,taskManager);
@@ -124,14 +126,17 @@ function createTask(taskManager,projectManager,projectId){
     
     form.querySelector("#cancel-task").addEventListener("click", () => {
         form.remove();
+        dialog.remove();
     });
-
-    document.querySelector("#app").append(form);
+    dialog.append(form)
+    document.querySelector("#app").append(dialog);
+    dialog.showModal();
     form.querySelector("#task-title").focus();
 }
 
 function createProject(taskManager,projectManager){
     if (document.querySelector("#project-form, #task-form, #edit-form")) return;
+    const dialog = document.createElement("dialog");
     const form = document.createElement("form");
     form.id = "project-form";
     form.innerHTML = `
@@ -164,14 +169,17 @@ function createProject(taskManager,projectManager){
         console.log(projectManager.Projects);
         saveProjects(projectManager.Projects);
         form.remove();
+        dialog.remove();
         createTask(taskManager,projectManager,newProject.id);
     });
 
      form.querySelector("#cancel-Project").addEventListener("click", () => {
         form.remove();
+        dialog.remove();
     });
-
-    document.querySelector("#app").append(form);
+    dialog.append(form);
+    document.querySelector("#app").append(dialog);
+    dialog.showModal();
     form.querySelector("#Project-title").focus();
 }
 
@@ -237,7 +245,7 @@ function taskCategories(projectManager){
         const allTasks = projectManager.Projects.flatMap(project => project.tasks);
         const completed = allTasks.filter(task => task.completed);
         console.log(completed);
-        displayCategoryTasks("Completed",completed)
+        displayCategoryTasks("Completed Tasks",completed)
         
     })
     const overDue = document.createElement("button");
@@ -333,6 +341,7 @@ function mainContent(project,projectManager,taskManager){
         editTaskbtn.type = "button";
         editTaskbtn.addEventListener("click",()=>{
             if (document.querySelector("#edit-form, #task-form")) return;
+            const dialog = document.createElement("dialog");
             const form = document.createElement("form");
             form.id = "edit-form";
             form.innerHTML = `
@@ -374,13 +383,17 @@ function mainContent(project,projectManager,taskManager){
             );
              saveProjects(projectManager.Projects);
             form.remove();
+            dialog.remove();
             mainContent(project, projectManager);
         });
        
         form.querySelector("#cancel-task").addEventListener("click", () => {
         form.remove();
+        dialog.remove();
     });
-    document.querySelector("#app").appendChild(form);
+    dialog.append(form);
+    document.querySelector("#app").appendChild(dialog);
+    dialog.showModal();
     form.querySelector("#task-title").focus();
     });
 
