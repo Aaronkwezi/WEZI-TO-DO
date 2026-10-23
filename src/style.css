@@ -1,18 +1,29 @@
 body{
     margin:0;
+    font-family: "Quicksand", sans-serif;
+}
+button,input,textarea,select{
+    font-family: inherit;
 }
 
 #app{
    display: flex; 
    min-height: 100vh;
 }
+
 .sidebar{
     display: flex;
     flex-direction: column;
     height: auto;
     background-color: rgb(39, 38, 38);
     padding: 50px;
+    box-sizing: border-box;
+    height: 100dvh;
+    flex-shrink: 0;
     margin-bottom: 0;
+    overflow-y:auto;
+    position: sticky;
+    top: 0;
 }
 .project-list{
     display: flex;
@@ -39,7 +50,7 @@ body{
     display: block;
     width:180px;
     height: auto;
-    margin: 0 auto 24px;
+    margin: 0 auto;
 }
 .sidebarbtn{
     display: block;
@@ -65,10 +76,41 @@ body{
     color: #3730a3;
     font-weight: 600;
 }
+.brand h2{
+    color: bisque;
+    margin-top: 0;
+}
 
 #main-page{
     flex: 1;
     min-width: 0;
+    background-color: #3A2E2B;
+}
+#main-page h1{
+    color: bisque;
+    margin-left: 7px;
+}
+
+.header{
+    display: flex;
+    justify-content: space-between;
+   
+}
+
+.addtask{
+    color:#dcfce7;
+    background-color: #24513c;
+    border: none;
+    border: 1px solid #397957;
+    font-family: inherit;
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 8px 16px;
+    cursor: pointer;
+}
+.addtask:hover{
+    background: #166534;
+    color: #fff;
 }
 
 nav{
@@ -83,6 +125,7 @@ nav{
     border-radius: 12px;
     padding-left: 20px;
     padding-right: 20px;
+    flex-shrink: 0;
 }
 nav button{
     color:bisque;
@@ -99,7 +142,13 @@ nav button:hover{
     color:  #0f172a;
 }
 #main-content{
-    margin: 45px;
+    margin: 0px;
+    flex: 1;
+    background-color: bisque;
+    padding: 20px;
+    border-top-right-radius: 20px;
+    border-top-left-radius: 20px;
+    min-height: 100vh;
 }
 .task-container{
     display: grid;
@@ -118,9 +167,20 @@ nav button:hover{
 }
 .taskInfo{
     min-width: 0;
-    overflow-wrap: anywhere;
     color: bisque;
     background-color:rgb(39, 38, 38);
+}
+.task-description{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+}
+.task-description:hover{
+    -webkit-line-clamp: unset;
+    background-color: rgb(49, 48, 48);
+    border-radius: 8px;
 }
 .taskActions{
     display: flex;
@@ -131,7 +191,39 @@ nav button:hover{
     gap: 8px;
     flex-shrink: 0;
 }
-
+.delete{
+    color:#ffb4b4;
+    background-color: #442626;
+    border: none;
+    border: 1px solid #8b4545;
+    font-family: inherit;
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 8px 14px;
+    cursor: pointer;
+}
+.delete:hover{
+    background: #b91c1c;
+    color:#fff ;
+}
+.edit{
+    color:#bfdbfe;
+    background-color: #24364b;
+    border: none;
+    border: 1px solid #52749b;
+    font-family: inherit;
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 8px 14px;
+    cursor: pointer;
+}
+.edit:hover{
+    background: #1d4ed8;
+    color:#fff ;
+}
+.checkButton{
+    color: bisque;
+}
 .category-card{
     display: grid;
     grid-template-columns: minmax(0,1fr) auto;

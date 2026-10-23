@@ -6,13 +6,15 @@ export function renderApp(taskManager,projectManager){
    const app = document.querySelector("#app");
    const mainPage = document.createElement("div");
    mainPage.id = "main-page";
+   const welcome = document.createElement("h1")
+   welcome.textContent="YOUR PERSONAL TASK MANAGER!!";
    const sidebar = createSidebar(taskManager,projectManager);
    const categories = taskCategories(projectManager);
-   mainPage.append(categories);
+   mainPage.append(welcome,categories);
    app.replaceChildren(sidebar,mainPage);
 
     const defaultProject = projectManager.Projects.find(
-        project => project.title === "Default"
+        project => project.title === "Inbox"
     );
 
     if (defaultProject) {
@@ -23,10 +25,15 @@ export function renderApp(taskManager,projectManager){
 function createSidebar(taskManager,projectManager){
     const sideBar = document.createElement("aside");
     sideBar.classList.add("sidebar");
+    const brand = document.createElement("div")
+    brand.classList.add("brand");
     const logoImg = document.createElement("img");
     logoImg.src = logo;
     logoImg.alt = " To do list logo";
     logoImg.classList.add("sidebar-logo");
+    const logoLabel = document.createElement("h2")
+    logoLabel.textContent = "WEZI - TO - DO";
+    brand.append(logoImg,logoLabel)
     const newtaskbtn = document.createElement("button");
     newtaskbtn.classList.add("sidebarbtn")
     newtaskbtn.textContent="New task";
@@ -56,7 +63,7 @@ function createSidebar(taskManager,projectManager){
         }
         
     });
-    sideBar.append(logoImg);
+    sideBar.append(brand);
     sideBar.append(newtaskbtn)
     sideBar.append(addProjectbtn);
     sideBar.append(projectsMenu);
@@ -168,6 +175,7 @@ function createProject(taskManager,projectManager){
         console.log(newProject)
         console.log(projectManager.Projects);
         saveProjects(projectManager.Projects);
+        refreshProjects(projectManager,taskManager)
         form.remove();
         dialog.remove();
         createTask(taskManager,projectManager,newProject.id);
@@ -206,20 +214,23 @@ function displayProjectsList(projectManager,taskManager){
     heading.textContent = title;
     const taskContainer = document.createElement("div");
     taskContainer.classList.add("task-container");
-    tasks.forEach(task=>{
+    const sortedTasks = [...tasks].sort((a, b)=> a.dueDate.localeCompare(b.dueDate));
+    sortedTasks.forEach(task=>{
         const taskCard = document.createElement("div");
         taskCard.classList.add("category-card")
         const taskInfo = document.createElement("div");
         taskInfo.classList.add("taskInfo")
-        const taskTitle = document.createElement("p");
+        const taskTitle = document.createElement("h4");
         taskTitle.textContent = task.title;
         const taskDescription = document.createElement("p");
+        taskDescription.classList.add("task-description");
         taskDescription.textContent = `Desc: ${task.description}`;
         const taskDueDate = document.createElement("p");
         taskDueDate.textContent = `Due date: ${task.dueDate}`;
         const taskPriority = document.createElement("p");
-        taskPriority.textContent = task.priority;
-        taskCard.append(taskTitle,taskDescription,taskDueDate,taskPriority);
+        taskPriority.textContent = `Priority: ${task.priority}`;
+        taskInfo.append(taskTitle,taskDescription)
+        taskCard.append(taskInfo,taskDueDate,taskPriority);
         taskContainer.append(taskCard);
     });
         if(tasks.length===0){
@@ -239,37 +250,34 @@ function displayProjectsList(projectManager,taskManager){
 function taskCategories(projectManager){
     const categories = document.createElement("nav");
     const completedTasks = document.createElement("button");
-    completedTasks.textContent="Completed";
+    const allTasks = projectManager.Projects.flatMap(project => project.tasks);
+    const completed = allTasks.filter(task => task.completed);
+    completedTasks.textContent=`Completed (${completed.length})`;
     completedTasks.type = "button";
     completedTasks.addEventListener("click",()=>{
-        const allTasks = projectManager.Projects.flatMap(project => project.tasks);
-        const completed = allTasks.filter(task => task.completed);
         console.log(completed);
         displayCategoryTasks("Completed Tasks",completed)
         
     })
     const overDue = document.createElement("button");
-    overDue.textContent="Over Due";
+    const OverdueTasks = Overdue(allTasks);
+    overDue.textContent=`Over Due(${OverdueTasks.length})`;
     overDue.type = "button";
     overDue.addEventListener("click",()=>{
-        const allTasks = projectManager.Projects.flatMap(project => project.tasks);
-        const OverdueTasks = Overdue(allTasks);
         displayCategoryTasks("OverDue Tasks",OverdueTasks);
     })
     const todayTasks = document.createElement("button");
-    todayTasks.textContent="Today's";
+    const todayTask = todaysTasks(allTasks);
+    todayTasks.textContent = `Today's (${todayTask.length})`;
     todayTasks.type = "button";
     todayTasks.addEventListener("click",()=>{
-        const allTasks = projectManager.Projects.flatMap(project => project.tasks);
-        const todayTask = todaysTasks(allTasks);
         displayCategoryTasks("Today's Tasks",todayTask);
     })
     const upcomingTasks = document.createElement("button");
-    upcomingTasks.textContent="Upcoming";
+    const upcoming = UpComingTasks(allTasks);
+    upcomingTasks.textContent=`Upcoming (${upcoming.length})`;
     upcomingTasks.type = "button";
     upcomingTasks.addEventListener("click",()=>{
-        const allTasks = projectManager.Projects.flatMap(project => project.tasks);
-        const upcoming = UpComingTasks(allTasks);
         displayCategoryTasks("Upcoming Tasks",upcoming);
     })
     categories.append(todayTasks,upcomingTasks,overDue,completedTasks);
@@ -282,9 +290,11 @@ function mainContent(project,projectManager,taskManager){
     const taskContainer = document.createElement("div")
     taskContainer.classList.add("task-container");
     const header = document.createElement("div");
+    header.classList.add("header");
     const heading = document.createElement("h2");
     heading.textContent= `${project.title}`;
     const addTaskBtn = document.createElement("button");
+    addTaskBtn.classList.add("addtask");
     addTaskBtn.textContent = "Add task";
     addTaskBtn.type = "button";
     addTaskBtn.addEventListener("click",()=>{
@@ -293,26 +303,27 @@ function mainContent(project,projectManager,taskManager){
 
     header.append(heading,addTaskBtn);
 
-    if(project.title!=="Default"){
+    if(project.title!=="Inbox"){
     const deleteProject = document.createElement("button");
+    deleteProject.classList.add("delete");
     deleteProject.textContent = "Delete Project";
     deleteProject.type = "button";
     deleteProject.addEventListener("click",()=>{
         
         projectManager.deleteProject(project.id);
         saveProjects(projectManager.Projects);
-        document.querySelector("#main-content")?.remove();
-        const currentList = document.querySelector(".project-list");
-        if(currentList){
-            currentList.replaceWith(displayProjectsList(projectManager,taskManager));
+        const inbox = projectManager.Projects.find(project=>project.title === "Inbox");
+        if(inbox){
+            mainContent(inbox,projectManager,taskManager);
         }
+        refreshProjects(projectManager,taskManager);
     
     })
       header.append(deleteProject);
  }
     
-
-    project.tasks.forEach(task=>{
+    const sortedTasks = [...project.tasks].sort((a, b)=> a.dueDate.localeCompare(b.dueDate));
+    sortedTasks.forEach(task=>{
         const taskCard = document.createElement("div");
         taskCard.classList.add("task-card")
         const taskInfo = document.createElement("div");
@@ -320,23 +331,27 @@ function mainContent(project,projectManager,taskManager){
         const taskTitle = document.createElement("h3");
         taskTitle.textContent = task.title;
         const taskDescription = document.createElement("p");
+        taskDescription.classList.add("task-description");
         taskDescription.textContent = `Desc: ${task.description}`;
         const taskDueDate = document.createElement("p");
         taskDueDate.textContent = `Due date: ${task.dueDate}`;
         const taskPriority = document.createElement("p");
-        taskPriority.textContent = task.priority;
+        taskPriority.textContent =`Priority: ${task.priority}`;
         taskInfo.append(taskTitle,taskDescription,taskDueDate,taskPriority);
         const taskActions = document.createElement("div");
         taskActions.classList.add("taskActions")
         const deleteTaskbtn = document.createElement("button")
+        deleteTaskbtn.classList.add("delete")
         deleteTaskbtn.textContent="Delete";
         deleteTaskbtn.type = "button";
         deleteTaskbtn.addEventListener("click",()=>{
             project.removeTask(task.id);
             saveProjects(projectManager.Projects);
+            refreshTasks(projectManager);
             mainContent(project,projectManager,taskManager);
         });
         const editTaskbtn = document.createElement("button");
+        editTaskbtn.classList.add("edit");
         editTaskbtn.textContent="Edit";
         editTaskbtn.type = "button";
         editTaskbtn.addEventListener("click",()=>{
@@ -382,9 +397,10 @@ function mainContent(project,projectManager,taskManager){
                 formData.get("priority")
             );
              saveProjects(projectManager.Projects);
+             refreshTasks(projectManager);
             form.remove();
             dialog.remove();
-            mainContent(project, projectManager);
+            mainContent(project, projectManager,taskManager);
         });
        
         form.querySelector("#cancel-task").addEventListener("click", () => {
@@ -398,6 +414,7 @@ function mainContent(project,projectManager,taskManager){
     });
 
     const checkButtonLabel = document.createElement("label");
+    checkButtonLabel.classList.add("checkButton");
     const checkbutton = document.createElement("input");
     checkbutton.textContent="Click here if task is completed";
     checkbutton.type = "checkbox";
@@ -405,9 +422,10 @@ function mainContent(project,projectManager,taskManager){
     checkbutton.addEventListener("change",()=>{
         task.completed = checkbutton.checked;
         saveProjects(projectManager.Projects);
+        refreshTasks(projectManager);
     })
        checkButtonLabel.append(checkbutton," Task completed");
-       taskActions.append(deleteTaskbtn,editTaskbtn,checkButtonLabel)
+       taskActions.append(editTaskbtn,deleteTaskbtn,checkButtonLabel)
         taskCard.append(taskInfo,taskActions);
         taskContainer.append(taskCard);
     });
@@ -424,4 +442,13 @@ function mainContent(project,projectManager,taskManager){
         document.querySelector("#main-page").append(content);
     }
 
+}
+function refreshTasks(projectManager){
+    document.querySelector("#main-page > nav").replaceWith(taskCategories(projectManager));
+}
+function refreshProjects(projectManager, taskManager){
+    const currentProjects = document.querySelector(".project-list");
+    if(currentProjects){
+        currentProjects.replaceWith(displayProjectsList(projectManager,taskManager));
+    }
 }
