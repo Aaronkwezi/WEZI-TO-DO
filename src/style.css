@@ -242,7 +242,43 @@ dialog{
     padding: 24px;
     border: none;
     border-radius: 12px;
+    background: #272626;
+    color: #ffe4c4;
+}
+dialog input,dialog textarea, dialog select{
+    background: #363332;
+    color: #fff7ed;
+    border: 1px solid #76665a;
+    border-radius: 6px;
+    padding: 10px;
+}
+#cancel-task,#cancel-Project{
+    background: rgb(180, 135, 95);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px;
+}
+#submit{
+    color:#dcfce7;
+    background-color: #24513c;
+    border: none;
+    border: 1px solid #397957;
+    font-family: inherit;
+    border-radius: 6px;
+    font-weight: 600;
+    padding: 6px;
+    cursor: pointer;
+}
+#submit:hover{
+    background: #166534;
+    color: #fff;
 }
 dialog::backdrop{
     background: rgb(0 0 0 / 45%);
+}
+form{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }

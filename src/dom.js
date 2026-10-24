@@ -47,10 +47,11 @@ function createSidebar(taskManager,projectManager){
     addProjectbtn.type = "button";
     addProjectbtn.addEventListener("click",()=>{
         createProject(taskManager,projectManager);
+        refreshProjects(projectManager,taskManager);
     })
     const projectsMenu = document.createElement("button");
     projectsMenu.classList.add("sidebarbtn")
-    projectsMenu.textContent = "Projects";
+    projectsMenu.textContent = `Projects (${projectManager.Projects.length})`;
     projectsMenu.type = "button";
     projectsMenu.addEventListener("click",()=>{
         const currentList = sideBar.querySelector(".project-list");
@@ -95,7 +96,7 @@ function createTask(taskManager,projectManager,projectId){
             <option value="High">High</option>
         </select>
 
-        <button type="submit">Save task</button>
+        <button type="submit" id="submit">Save task</button>
         <button type="button" id="cancel-task">Cancel</button>
     `;
 
@@ -124,9 +125,11 @@ function createTask(taskManager,projectManager,projectId){
         saveProjects(projectManager.Projects);
         form.remove();
         dialog.remove();
-        if(projectId){
-            const selectedProject = projectManager.findProjects(projectId);
-            mainContent(selectedProject,projectManager,taskManager);
+        refreshTasks(projectManager);
+        
+            const selectedProject = projectId?projectManager.findProjects(projectId):projectManager.Projects.find(project=>project.title==="Inbox");
+            if(selectedProject){
+                mainContent(selectedProject,projectManager,taskManager);
         }
         
     });
@@ -155,7 +158,7 @@ function createProject(taskManager,projectManager){
         <label for="Project-description">Description</label>
         <textarea id="Project-description" name="description" rows="3"></textarea>
 
-        <button type="submit">Save Project</button>
+        <button type="submit" id="submit">Save Project</button>
         <button type="button" id="cancel-Project">Cancel</button>
     `;
 
@@ -348,6 +351,7 @@ function mainContent(project,projectManager,taskManager){
             project.removeTask(task.id);
             saveProjects(projectManager.Projects);
             refreshTasks(projectManager);
+            refreshProjects(projectManager,taskManager)
             mainContent(project,projectManager,taskManager);
         });
         const editTaskbtn = document.createElement("button");
@@ -378,7 +382,7 @@ function mainContent(project,projectManager,taskManager){
                 <option value="High">High</option>
             </select>
 
-            <button type="submit">Save task</button>
+            <button type="submit" id="submit">Save task</button>
             <button type="button" id="cancel-task">Cancel</button>
         `;
         form.querySelector("#task-title").value = task.title;
