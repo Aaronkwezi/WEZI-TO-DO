@@ -1,4 +1,5 @@
 # WEZI-TO-DO
+- view page: https://aaronkwezi.github.io/WEZI-TO-DO/
 ## INTRO TO WEZI-TO-DO
 -   In our day to day activities we get caught up in many activities to perform and we lose track of our schedules.
     But with  this browser based application "WEZI-TO-DO" you will be able to organize your tasks for the day in an orderly fashion and have your days inorder with out having to cram your tight schedule.
